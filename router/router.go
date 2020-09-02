@@ -22,4 +22,6 @@ func SetupRoutes(app *fiber.App) {
 	posts.Get("/", guards.AuthRequired(), handler.FindUserPosts)
 	posts.Get("/:id", guards.AuthRequired(), handler.FindSinglePost)
 	posts.Post("/", guards.AuthRequired(), handler.CreatePost)
+	posts.Delete("/:id", guards.AuthRequired(), handler.DeleteSinglePost)
+	posts.Delete("/", guards.AuthRequired(), handler.DeleleAllUserPosts)
 }

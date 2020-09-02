@@ -102,3 +102,57 @@ func CreatePost(c *fiber.Ctx) {
 	}
 	c.JSON(create)
 }
+
+func DeleteSinglePost(c *fiber.Ctx) {
+	ctx := context.Background()
+	prisma := db.NewClient()
+	err := prisma.Connect()
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		err := prisma.Disconnect()
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+	PostID := c.Params("id")
+
+	post, err := prisma.Post.FindOne(
+		db.Post.ID.Equals(PostID),
+	).Delete().Exec(ctx)
+	if err != nil {
+		panic(err)
+	}
+	c.SendStatus(200)
+}
+
+func DeleleAllUserPosts(c *fiber.Ctx) {
+	ctx := context.Background()
+	prisma := db.NewClient()
+	err := prisma.Connect()
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		err := prisma.Disconnect()
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	authEmail := claims["email"].(string)
+
+	posts, err := prisma.Post.FindMany(
+		db.Post.Author.Where(
+			db.User.Email.Equals(authEmail),
+		),
+	).Delete().Exec(ctx)
+	if err != nil {
+		panic(err)
+	}
+	c.SendStatus(200)
+}
