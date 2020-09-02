@@ -8,6 +8,7 @@ import (
 
 func SetupRoutes(app *fiber.App) {
 	app.Use(middleware.Logger())
+	app.Use(middleware.Compress())
 	api := app.Group("/api/v1")
 	auth := api.Group("/auth")
 	auth.Get("/", handler.GetUsers)
