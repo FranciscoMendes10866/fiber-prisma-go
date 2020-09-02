@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:alpine
+    restart: always
+    container_name: golang
+    ports:
+      - "9000:5432"
+    environment:
+      POSTGRES_USER: golang
+      POSTGRES_PASSWORD: golang
+      POSTGRES_DB: golang
+    volumes:
+      - ./init:/golang-entrypoint-initdb.d/
