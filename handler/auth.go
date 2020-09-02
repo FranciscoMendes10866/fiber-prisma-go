@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/FranciscoMendes10866/api-go/prisma/db"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber"
 )
 
@@ -89,5 +90,17 @@ func LoginUser(c *fiber.Ctx) {
 	if err != nil {
 		panic(err)
 	}
-	c.JSON(login)
+	// Create token
+	token := jwt.New(jwt.SigningMethodHS256)
+	// Set claims
+	claims := token.Claims.(jwt.MapClaims)
+	claims["email"] = login.Email
+	// Generate encoded token and send it as response.
+	loginToken, err := token.SignedString([]byte("secret"))
+	if err != nil {
+		c.SendStatus(fiber.StatusInternalServerError)
+		return
+	}
+	// Response
+	c.JSON(fiber.Map{"token": loginToken})
 }
