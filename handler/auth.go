@@ -96,7 +96,7 @@ func LoginUser(c *fiber.Ctx) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["email"] = login.Email
 	// Generate encoded token and send it as response.
-	loginToken, err := token.SignedString([]byte("secret"))
+	loginToken, err := token.SignedString([]byte("SECRET"))
 	if err != nil {
 		c.SendStatus(fiber.StatusInternalServerError)
 		return
